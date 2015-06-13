@@ -7,6 +7,30 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>Mobile Deposit API</name>
     <description>CloudBees example Mobile Deposit API</description>
+    <url>https://github.com/kmadel/mobile-deposit-api</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>kmadel</id>
+            <name>Kurt Madel</name>
+            <email>kmadel@cloudbees.com</email>
+            <url>https://github.com/kmadel</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/kmadel/mobile-deposit-api</url>
+        <connection>scm:git:https://github.com/kmadel/mobile-deposit-api.git</connection>
+        <developerConnection>scm:git:https://github.com/kmadel/mobile-deposit-api.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <parent>
         <!-- Your own application should inherit from spring-boot-starter-parent -->
@@ -73,6 +97,43 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.2</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.8.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>de.jutzig</groupId>
+                <artifactId>github-release-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <id>github-upload</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>release</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <releaseName>${project.version}</releaseName>
+                            <tag>${project.version}</tag>
+                            <artifact>${project.build.directory}/${project.groupId}.${project.artifactId}-${project.version}.jar</artifact>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
