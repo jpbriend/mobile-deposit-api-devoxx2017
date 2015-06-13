@@ -1,5 +1,0 @@
-com/cloudbees/example/mobile/deposit/api/model/Deposit.class
-com/cloudbees/example/mobile/deposit/api/SimpleCORSFilter.class
-com/cloudbees/example/mobile/deposit/api/JerseyConfig.class
-com/cloudbees/example/mobile/deposit/api/DepositEndpoint.class
-com/cloudbees/example/mobile/deposit/api/MobileDepositApplication.class
