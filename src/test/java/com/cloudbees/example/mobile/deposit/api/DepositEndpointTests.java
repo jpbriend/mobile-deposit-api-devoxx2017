@@ -25,8 +25,6 @@ import static org.junit.Assert.assertEquals;
 @WebAppConfiguration
 public class DepositEndpointTests {
 
-
-
     @Value("${local.server.port}")
     private int port;
 

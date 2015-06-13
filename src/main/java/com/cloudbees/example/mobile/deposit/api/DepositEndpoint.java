@@ -5,6 +5,7 @@ package com.cloudbees.example.mobile.deposit.api;
  */
 
 import com.cloudbees.example.mobile.deposit.api.model.Deposit;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -16,13 +17,18 @@ import java.math.BigDecimal;
 @Path("/account/deposit")
 public class DepositEndpoint {
 
+    @Value("${version}")
+    private String version;
+
     @GET
     public Deposit getDepositAccount() {
+
+
 
         Deposit depositAccount = new Deposit();
         depositAccount.setAccountNumber(1234567890L);
         depositAccount.setBalance(new BigDecimal(8760.85));
-        depositAccount.setVersion(0.1F);
+        depositAccount.setVersion(version);
 
         return depositAccount;
     }

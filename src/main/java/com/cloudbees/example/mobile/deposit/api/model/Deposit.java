@@ -9,7 +9,7 @@ public class Deposit {
 
     private long accountNumber;
 
-    private float version;
+    private String version;
 
     private BigDecimal balance;
 
@@ -21,11 +21,11 @@ public class Deposit {
         this.accountNumber = accountNumber;
     }
 
-    public float getVersion() {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(float version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
