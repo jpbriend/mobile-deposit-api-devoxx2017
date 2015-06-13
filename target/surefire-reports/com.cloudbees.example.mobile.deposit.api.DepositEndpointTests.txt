@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.cloudbees.example.mobile.deposit.api.DepositEndpointTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.773 sec - in com.cloudbees.example.mobile.deposit.api.DepositEndpointTests
