@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MobileDepositApplication.class)
-@IntegrationTest("server.port=0")
+@IntegrationTest({"server.port=0","version=0.0.1"})
 @WebAppConfiguration
 public class DepositEndpointTests {
 
