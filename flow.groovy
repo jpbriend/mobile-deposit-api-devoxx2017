@@ -2,10 +2,7 @@ def dockerBuildTag = 'latest'
 stage 'build'
 node('docker') {
     docker.withServer('tcp://127.0.0.1:1234'){
-        docker.withRegistry('https://registry.hub.docker.com/', 'docker-registry-kmadel-login') {
-            def maven3 = docker.image('maven:3.3.3-jdk-8')
-            maven3.pull()
-            maven3.inside() {
+            docker.image('maven:3.3.3-jdk-8').inside {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
                 sh 'mvn clean package'
 
@@ -24,7 +21,6 @@ node('docker') {
                 }
                 matcher = null
             }
-        }
     }
     docker.withServer('tcp://54.165.201.3:2376','slave-docker-us-east-1-tls'){
         unarchive mapping: ['target/*.jar' : '.', 'target/Dockerfile' : '.']
