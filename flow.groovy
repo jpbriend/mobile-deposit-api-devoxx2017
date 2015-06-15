@@ -41,7 +41,7 @@ node('docker') {
         stage 'publish docker image'
         docker.withServer('tcp://127.0.0.1:1234') {
             docker.withRegistry('https://registry.hub.docker.com/', 'docker-registry-kmadel-login') {
-                def mobileDepositApiImagePush = docker.build "kmadel/mobile-deposit-api:latest"
+                def mobileDepositApiImagePush = docker.build "kmadel/mobile-bank-api:latest"
                 mobileDepositApiImagePush.push()
             }
         }
