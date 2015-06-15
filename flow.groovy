@@ -37,9 +37,8 @@ node('docker') {
         sh "docker run -d --name mobile-deposit-api -p 8080:8080 kmadel/mobile-deposit-api:${dockerBuildTag}"
 
         stage 'publish docker image'
-        //sh 'docker login -e "kmadel@mac.com" -u "kmadel" -p "noah2772"'
-        //mobileDepositApiImage.push "${dockerBuildTag}"
-       sh 'curl "http://webhook:13461862c863d7df39e63435eb17deb9@jenkins-latest.beedemo.net/mobile-team/job/mobile-deposit-ui-workflow/build?token=llNSDXpfTim4Bm2SIIoQezwwQOHmEMYgSeHSUnL"'
+        mobileDepositApiImage.push "${dockerBuildTag}"
+        //sh 'curl "http://webhook:13461862c863d7df39e63435eb17deb9@jenkins-latest.beedemo.net/mobile-team/job/mobile-deposit-ui-workflow/build?token=llNSDXpfTim4Bm2SIIoQezwwQOHmEMYgSeHSUnL"'
     }
    }
 
