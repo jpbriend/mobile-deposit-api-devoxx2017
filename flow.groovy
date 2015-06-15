@@ -11,10 +11,11 @@ node('docker') {
                 step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
 
                 stage 'release'
+                archive 'target/*.jar, target/Dockerfile'
                 sh 'sleep 10'
             }
     }
-    docker.withServer('tcp://54.165.201.3:2376','slave-docker-us-east-1-tls'){
+    docker.withServer('https://54.165.201.3:2376','slave-docker-us-east-1-p12'){
         unarchive mapping: ['target/*.jar' : '.', 'target/Dockerfile' : '.']
         stage 'build docker image'
         def mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${dockerBuildTag}"
