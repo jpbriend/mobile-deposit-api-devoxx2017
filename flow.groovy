@@ -25,7 +25,7 @@ node('docker') {
 
         unarchive mapping: ['target/mobile-deposit-api.jar' : '.', 'target/Dockerfile' : '.']
         stage 'build docker image'
-        def mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${dockerBuildTag}"
+        docker.build "kmadel/mobile-deposit-api:${dockerBuildTag}"
 
         stage 'deploy to production'
         try{
@@ -41,8 +41,8 @@ node('docker') {
         stage 'publish docker image'
         docker.withServer('tcp://127.0.0.1:1234') {
             docker.withRegistry('https://registry.hub.docker.com/', 'docker-registry-kmadel-login') {
-                def mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${dockerBuildTag}"
-                mobileDepositApiImage.push "${dockerBuildTag}"
+                def mobileDepositApiImagePush = docker.build "kmadel/mobile-deposit-api:latest"
+                mobileDepositApiImagePush.push()
             }
         }
 
