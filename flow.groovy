@@ -15,7 +15,6 @@ node('docker') {
                 sh 'sleep 10'
             }
     }
-    docker.withServer('https://54.165.201.3:2376'){
         unarchive mapping: ['target/*.jar' : '.', 'target/Dockerfile' : '.']
         stage 'build docker image'
         def mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${dockerBuildTag}"
@@ -28,6 +27,4 @@ node('docker') {
             //mobileDepositApiImage.push()
             mobileDepositApiImage.push "${dockerBuildTag}"
         }
-
-    }
 }
