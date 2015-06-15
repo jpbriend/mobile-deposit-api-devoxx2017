@@ -2,17 +2,17 @@ def dockerBuildTag = 'latest'
 stage 'build'
 node('docker') {
     docker.withServer('tcp://127.0.0.1:1234'){
-            docker.image('maven:3.3.3-jdk-8').inside {
+            docker.image('maven:3.3.3-jdk-8').inside('-v /data:/data') {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
-                sh 'mvn clean package'
+                sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo clean package'
 
                 stage 'integration-test'
-                sh 'mvn verify'
+                sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo verify'
                 step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
 
                 stage 'release'
-                sh 'mvn -B release:prepare'
-                sh 'mvn release:perform -Darguments="-Dmaven.deploy.skip=true"'
+                sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo -B release:prepare'
+                sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo release:perform -Darguments="-Dmaven.deploy.skip=true"'
                 archive 'target/*.jar, target/Dockerfile'
                 def matcher = readFile('target/checkout/pom.xml') =~ '<version>(.+)</version>'
                 if (matcher) {
