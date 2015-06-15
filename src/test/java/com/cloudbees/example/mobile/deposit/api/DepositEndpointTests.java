@@ -38,7 +38,7 @@ public class DepositEndpointTests {
 
 
         Deposit deposit = entity.getBody();
-        assertEquals("xxxxxxxxxxxx7890", deposit.getAccountNumber());
+        assertEquals("Free Checking", deposit.getName());
 
     }
 
