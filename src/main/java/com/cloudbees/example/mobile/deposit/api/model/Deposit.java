@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  */
 public class Deposit {
 
-    private long accountNumber;
+    private String accountNumber;
 
     private String version;
 
@@ -23,11 +23,11 @@ public class Deposit {
 
     private String name;
 
-    public long getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(long accountNumber) {
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 
