@@ -28,7 +28,8 @@ public class DepositEndpoint {
         Deposit depositAccount = new Deposit();
         depositAccount.setAccountNumber(1234567890L);
         depositAccount.setBalance(new BigDecimal(8760.85));
-        depositAccount.setVersion(version);
+        depositAccount.setVersion("1.0");
+        depositAccount.setName("Free Checking");
 
         return depositAccount;
     }
