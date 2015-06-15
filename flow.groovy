@@ -22,7 +22,7 @@ node('docker') {
             }
 
   docker.withServer('tcp://54.173.235.97:2375'){
-    docker.withRegistry('https://registry.hub.docker.com/', 'docker-registry-kmadel-login') {
+
         unarchive mapping: ['target/mobile-deposit-api.jar' : '.', 'target/Dockerfile' : '.']
         stage 'build docker image'
         def mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${dockerBuildTag}"
@@ -35,12 +35,16 @@ node('docker') {
            echo "no container to stop"        
         }
         sh "docker run -d --name mobile-deposit-api -p 8080:8080 kmadel/mobile-deposit-api:${dockerBuildTag}"
-
-        stage 'publish docker image'
-        mobileDepositApiImage.push "${dockerBuildTag}"
+        //hack to kick off ui job
         //sh 'curl "http://webhook:13461862c863d7df39e63435eb17deb9@jenkins-latest.beedemo.net/mobile-team/job/mobile-deposit-ui-workflow/build?token=llNSDXpfTim4Bm2SIIoQezwwQOHmEMYgSeHSUnL"'
-    }
    }
+        stage 'publish docker image'
+        docker.withServer('tcp://127.0.0.1:1234') {
+            docker.withRegistry('https://registry.hub.docker.com/', 'docker-registry-kmadel-login') {
+                def mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${dockerBuildTag}"
+                mobileDepositApiImage.push "${dockerBuildTag}"
+            }
+        }
 
   }
 }
