@@ -2,7 +2,7 @@ def dockerBuildTag = 'latest'
 stage 'build'
 node('docker') {
     docker.withServer('tcp://127.0.0.1:1234'){
-            docker.image('maven:3.3.3-jdk-8').inside('-v /data:/data') {
+            docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
                 sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo clean package'
 
@@ -11,15 +11,7 @@ node('docker') {
                 step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
 
                 stage 'release'
-                sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo -B release:prepare'
-                sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo release:perform -Darguments="-Dmaven.deploy.skip=true"'
-                archive 'target/*.jar, target/Dockerfile'
-                def matcher = readFile('target/checkout/pom.xml') =~ '<version>(.+)</version>'
-                if (matcher) {
-                    dockerBuildTag = $ { matcher[0][1] }
-                    echo "Releaed version ${dockerBuildTag}"
-                }
-                matcher = null
+                sh 'sleep 10'
             }
     }
     docker.withServer('tcp://54.165.201.3:2376','slave-docker-us-east-1-tls'){
