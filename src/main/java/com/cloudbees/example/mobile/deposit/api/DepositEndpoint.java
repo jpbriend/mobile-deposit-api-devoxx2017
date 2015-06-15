@@ -20,12 +20,10 @@ public class DepositEndpoint {
     @GET
     public Deposit getDepositAccount() {
 
-
-
         Deposit depositAccount = new Deposit();
-        depositAccount.setAccountNumber("XXXX9876");
+        depositAccount.setAccountNumber("1234567890129876");
         depositAccount.setBalance(new BigDecimal(8760.85));
-        depositAccount.setVersion("2.0");
+        depositAccount.setVersion("1.0");
         depositAccount.setName("Free Checking");
 
         return depositAccount;
