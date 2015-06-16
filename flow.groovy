@@ -24,7 +24,7 @@ node('docker') {
                 matcher = null
             }
 
-  docker.withServer('tcp://54.173.235.97:2375'){
+  docker.withServer('tcp://54.165.201.3:2376', 'slave-docker-us-east-1-tls'){
 
         stage 'build docker image'
       def mobileDepositApiImage
