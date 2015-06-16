@@ -23,12 +23,13 @@ node('docker') {
                     echo "Releaed version ${buildVersion}"
                 }
                 matcher = null
-                archive "target/*.jar, target/Dockerfile"
+                archive 'target', includes: '*.jar, Dockerfile'
             }
 
   docker.withServer('tcp://54.173.235.97:2375'){
 
         unarchive mapping: ['target/': '.']
+        input 'Were the file unarchived properly?'
         stage 'build docker image'
         docker.build "kmadel/mobile-deposit-api:${dockerBuildTag}"
 
