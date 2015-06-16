@@ -39,7 +39,7 @@ node('docker') {
         } catch (Exception _) {
            echo "no container to stop"        
         }
-        mobileDepositApiImage.run("-d --name mobile-deposit-api -p 8080:8080")
+        mobileDepositApiImage.run("--name mobile-deposit-api -p 8080:8080")
         //hack to kick off ui job
         //sh 'curl "http://webhook:13461862c863d7df39e63435eb17deb9@jenkins-latest.beedemo.net/mobile-team/job/mobile-deposit-ui-workflow/build?token=llNSDXpfTim4Bm2SIIoQezwwQOHmEMYgSeHSUnL"'
         //stage 'publish docker image'
