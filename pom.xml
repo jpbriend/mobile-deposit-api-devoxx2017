@@ -24,6 +24,9 @@
             <url>https://github.com/kmadel</url>
         </developer>
     </developers>
+    <properties>
+        <project.scm.id>github</project.scm.id>
+    </properties>
 
     <scm>
         <url>https://github.com/cloudbees/mobile-deposit-api</url>
