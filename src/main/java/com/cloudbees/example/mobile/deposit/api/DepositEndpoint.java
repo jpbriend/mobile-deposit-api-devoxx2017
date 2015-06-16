@@ -17,14 +17,16 @@ import java.math.BigDecimal;
 @Path("/account/deposit")
 public class DepositEndpoint {
 
+    @Value("${version}")
+    private String version;
+
     @GET
     public Deposit getDepositAccount() {
 
         Deposit depositAccount = new Deposit();
         depositAccount.setAccountNumber("XXXXXXX9876");
         depositAccount.setBalance(new BigDecimal(8760.85));
-        depositAccount.setVersion("2.0");
-        depositAccount.setName("Free Checking");
+        depositAccount.setVersion(version);
 
         return depositAccount;
     }
