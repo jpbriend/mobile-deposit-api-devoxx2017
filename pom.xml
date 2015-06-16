@@ -9,6 +9,13 @@
     <description>CloudBees example Mobile Deposit API</description>
     <url>https://github.com/kmadel/mobile-deposit-api</url>
 
+    <parent>
+        <!-- Your own application should inherit from spring-boot-starter-parent -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.3.0.M1</version>
+    </parent>
+
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -24,9 +31,6 @@
             <url>https://github.com/kmadel</url>
         </developer>
     </developers>
-    <properties>
-        <project.scm.id>github</project.scm.id>
-    </properties>
 
     <scm>
         <url>https://github.com/cloudbees/mobile-deposit-api</url>
@@ -35,20 +39,16 @@
         <tag>HEAD</tag>
     </scm>
 
-    <parent>
-        <!-- Your own application should inherit from spring-boot-starter-parent -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.3.0.M1</version>
-    </parent>
     <organization>
         <name>CloudBees, Inc.</name>
         <url>http://www.cloudbees.com</url>
     </organization>
+
     <properties>
         <java.version>1.8</java.version>
-        <docker.image.prefix>kmadel</docker.image.prefix>
+        <project.scm.id>github</project.scm.id>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
