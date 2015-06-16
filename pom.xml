@@ -26,9 +26,9 @@
     </developers>
 
     <scm>
-        <url>https://github.com/kmadel/mobile-deposit-api</url>
-        <connection>scm:git:https://github.com/kmadel/mobile-deposit-api.git</connection>
-        <developerConnection>scm:git:https://github.com/kmadel/mobile-deposit-api.git</developerConnection>
+        <url>https://kmadel@github.com/cloudbees/mobile-deposit-api</url>
+        <connection>scm:git:https://kmadel@github.com/cloudbees/mobile-deposit-api.git</connection>
+        <developerConnection>scm:git:https://github.com/cloudbees/mobile-deposit-api.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
