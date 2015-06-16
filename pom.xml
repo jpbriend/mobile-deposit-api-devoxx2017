@@ -4,7 +4,7 @@
 
     <groupId>com.cloudbees.example.mobile.api</groupId>
     <artifactId>mobile-deposit-api</artifactId>
-    <version>0.0.10-SNAPSHOT</version>
+    <version>0.0.19-SNAPSHOT</version>
     <name>Mobile Deposit API</name>
     <description>CloudBees example Mobile Deposit API</description>
     <url>https://github.com/kmadel/mobile-deposit-api</url>
