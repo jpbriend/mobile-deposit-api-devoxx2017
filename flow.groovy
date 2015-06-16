@@ -5,7 +5,7 @@ node('docker') {
     docker.withServer('tcp://127.0.0.1:1234'){
             docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
                 sh 'rm -rf *'
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], clean: true, doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
                 sh 'git checkout master'
                 sh 'git config user.email "kmadel@mac.com"'
                 sh 'git config user.name "kmadel"'
