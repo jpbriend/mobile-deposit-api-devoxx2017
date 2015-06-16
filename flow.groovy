@@ -23,7 +23,7 @@ node('docker') {
                     echo "Releaed version ${buildVersion}"
                 }
                 matcher = null
-                archive 'target', includes: ['*.jar', 'Dockerfile']
+                archive 'target/*.jar, target/Dockerfile'
             }
 
   docker.withServer('tcp://54.173.235.97:2375'){
