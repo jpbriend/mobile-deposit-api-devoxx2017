@@ -27,10 +27,11 @@ node('docker') {
   docker.withServer('tcp://54.173.235.97:2375'){
 
         stage 'build docker image'
+      def mobileDepositApiImage
         dir('target') {
-            def mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${buildVersion}"
+            mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${buildVersion}"
         }
-      
+
         stage 'deploy to production'
         try{
           sh "docker stop mobile-deposit-api"
