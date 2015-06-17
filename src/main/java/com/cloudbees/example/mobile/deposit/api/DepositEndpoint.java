@@ -24,7 +24,7 @@ public class DepositEndpoint {
     public Deposit getDepositAccount() {
 
         Deposit depositAccount = new Deposit();
-        depositAccount.setAccountNumber("XXXXXXX9876");
+        depositAccount.setAccountNumber("1234567890129876");
         depositAccount.setBalance(new BigDecimal(8760.85));
         depositAccount.setVersion(version);
 
