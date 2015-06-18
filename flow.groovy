@@ -27,7 +27,7 @@ node('docker') {
   docker.withServer('tcp://54.165.201.3:2376', 'slave-docker-us-east-1-tls'){
 
         stage 'build docker image'
-      def mobileDepositApiImage
+        def mobileDepositApiImage
         dir('target') {
             mobileDepositApiImage = docker.build "kmadel/mobile-deposit-api:${buildVersion}"
         }
