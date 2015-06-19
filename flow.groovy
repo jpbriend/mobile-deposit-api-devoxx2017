@@ -11,6 +11,9 @@ node('docker') {
                 sh 'git remote set-url origin git@github.com:cloudbees/mobile-deposit-api.git'
                 sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo clean package'
 
+                stage 'sonar analysis'
+                sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo sonar:sonar'
+
                 stage 'integration-test'
                 sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo verify'
                 //step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
