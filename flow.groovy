@@ -30,7 +30,7 @@ node('docker') {
             def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
             if (matcher) {
                 buildVersion = matcher[0][1]
-                echo "Releaed version ${buildVersion}"
+                echo "Released version ${buildVersion}"
             }
             matcher = null
         }
