@@ -11,15 +11,6 @@ node('docker') {
             sh 'git remote set-url origin git@github.com:cloudbees/mobile-deposit-api.git'
             sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo clean package'
 
-            archive 'pom.xml, src/'
-        }
-    }
-
-    stage 'sonar analysis'
-    checkpoint 'Finished build'
-    unarchive mapping: ['pom.xml': '.', 'src/': '.']
-    docker.withServer('tcp://127.0.0.1:1234') {
-        docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data')  {
             sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo sonar:sonar'
 
             stage 'integration-test'
