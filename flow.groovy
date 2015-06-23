@@ -14,9 +14,7 @@ node('docker') {
             archive 'pom.xml, src/'
         }
     }
-}
 
-node('docker') {
     stage 'sonar analysis'
     checkpoint 'Finished build'
     unarchive mapping: ['pom.xml': '.', 'src/': '.']
