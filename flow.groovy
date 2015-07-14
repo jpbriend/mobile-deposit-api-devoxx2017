@@ -44,6 +44,7 @@ node('docker') {
            echo "no container to stop"        
         }
         mobileDepositApiImage.run("--name mobile-deposit-api -p 8080:8080")
+        sh 'curl http://webhook:336838a2daad1ea4ed0d18734ff6a9fb@jenkins.beedemo.net/api-team/docker-traceability/submitContainerStatus --data-urlencode inspectData="$(docker inspect mobile-deposit-api)" --data-urlencode hostName=prod-server-1'
 
         stage 'publish docker image'
         docker.withRegistry('https://registry.hub.docker.com/', 'docker-registry-kmadel-login') {
