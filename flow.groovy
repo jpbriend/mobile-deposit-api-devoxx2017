@@ -48,7 +48,7 @@ node('docker') {
       stage 'publish docker image'
         docker.withRegistry('https://registry.hub.docker.com/', 'docker-registry-kmadel-login') {
             //mobileDepositApiImage.push()
-            mobileDepositApiImage.push "${dockerBuildTag}"
+            mobileDepositApiImage.push()
         }
         //sh 'curl -H "Content-Type: application/json" -X POST -d \'{"push_data": {"pushed_at": 1434386606, "images": null, "pusher": "kmadel"}, "callback_url": "https://registry.hub.docker.com/u/kmadel/mobile-bank-api/hook/21a0ic0dje2ff4hg3f3hbg23b5220454b/", "repository": {"status": "Active", "description": "", "is_trusted": false, "full_description": "", "repo_url": "https://registry.hub.docker.com/u/kmadel/mobile-bank-api/", "owner": "kmadel", "is_official": false, "is_private": false, "name": "mobile-bank-api", "namespace": "kmadel", "star_count": 0, "comment_count": 0, "date_created": 1434385021, "repo_name": "kmadel/mobile-bank-api"}}\' http://webhook:13461862c863d7df39e63435eb17deb9@jenkins.beedemo.net/mobile-team/dockerhub-webhook/notify'
    }
