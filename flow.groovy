@@ -36,7 +36,7 @@ node('docker') {
 }
 
 checkpoint 'Quality Analysis Complete'
-
+error 'test Quality Analysis Complete checkpoint'
 node('docker') {
     unarchive mapping: ['pom.xml' : '.', 'target/' : '.']
 
