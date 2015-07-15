@@ -1,3 +1,7 @@
+import java.util.Random
+def Random rand = new Random()
+def int max = 10
+
 def buildVersion = null
 stage 'Build'
 node('docker') {
@@ -37,10 +41,11 @@ node('docker') {
 
 checkpoint 'Quality Analysis Complete'
 node('docker') {
-    //allows easy testing of above checkpoint
-    if(failBeforeProd) {
-        error 'test Quality Analysis Complete checkpoint'
-    }
+    //allows randome testing of above checkpoint
+    if(rand.nextInt(max+1)>6){
+        error 'failing to test checkpoint'
+    } 
+    
     unarchive mapping: ['pom.xml' : '.', 'target/' : '.']
 
     stage 'Version Release'
