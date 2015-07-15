@@ -37,7 +37,10 @@ node('docker') {
 
 checkpoint 'Quality Analysis Complete'
 node('docker') {
-    //error 'test Quality Analysis Complete checkpoint'
+    //allows easy testing of above checkpoint
+    if(${failBeforeProd}) {
+        error 'test Quality Analysis Complete checkpoint'
+    }
     unarchive mapping: ['pom.xml' : '.', 'target/' : '.']
 
     stage 'Version Release'
