@@ -43,7 +43,7 @@ checkpoint 'Quality Analysis Complete'
 node('docker') {
     //allows randome testing of above checkpoint
     if(rand.nextInt(max+1)>6){
-        error 'failing to test checkpoint'
+        error 'error to allow testing checkpoint'
     } 
     
     unarchive mapping: ['pom.xml' : '.', 'target/' : '.']
