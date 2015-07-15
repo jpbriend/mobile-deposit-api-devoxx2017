@@ -43,7 +43,8 @@ node('docker') {
 checkpoint 'Quality Analysis Complete'
 node('docker') {
     //allows randome testing of above checkpoint
-    if(rand.nextInt(max+1)>6){
+    def failInt = rand.nextInt(max+1)
+    if(failInt>6){
         error 'error to allow testing checkpoint'
     } 
     
