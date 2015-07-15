@@ -10,12 +10,9 @@ node('docker') {
             sh 'git config user.name "kmadel"'
             sh 'git remote set-url origin git@github.com:cloudbees/mobile-deposit-api.git'
             sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo clean package'
-            archive 'pom.xml, src/, target/'
-
-            
-            
         }
     }
+    archive 'pom.xml, src/, target/'
 }
 
 checkpoint 'Build Complete'
