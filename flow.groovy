@@ -25,6 +25,7 @@ stage 'Quality Analysis'
 node('docker') {
     unarchive mapping: ['pom.xml' : '.', 'src/' : '.']
     docker.withServer('tcp://127.0.0.1:1234') {
+        //test in paralell
         parallel(
             integrationTests: {
               docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
