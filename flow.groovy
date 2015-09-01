@@ -5,7 +5,7 @@ def int max = 10
 def buildVersion = null
 stage 'Build'
 node('docker') {
-    //docker.withServer('tcp://127.0.0.1:1234') {
+    docker.withServer('tcp://127.0.0.1:1234') {
         docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
             sh 'rm -rf *'
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], clean: true, doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
@@ -15,7 +15,7 @@ node('docker') {
             sh 'git remote set-url origin git@github.com:cloudbees/mobile-deposit-api.git'
             sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo clean package'
         }
-    //}
+    }
     archive 'pom.xml, src/, target/'
 }
 
