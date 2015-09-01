@@ -49,6 +49,7 @@ node('docker') {
 }
 
 checkpoint 'Quality Analysis Complete'
+stage 'Version Release'
 node('docker') {
     //allows randome testing of above checkpoint
     def failInt = rand.nextInt(max+1)
@@ -58,7 +59,6 @@ node('docker') {
     
     unarchive mapping: ['pom.xml' : '.', 'target/' : '.']
 
-    stage 'Version Release'
     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
     if (matcher) {
         buildVersion = matcher[0][1]
