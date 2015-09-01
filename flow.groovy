@@ -24,6 +24,14 @@ checkpoint 'Build Complete'
 stage 'Quality Analysis'
 node('docker') {
     unarchive mapping: ['pom.xml' : '.', 'src/' : '.']
+    waitUntil {
+        try {
+            readFile 'src/main/java/com/cloudbees/example/mobile/deposit/api/DepositEndpoint.java'
+            return true
+        } catch (FileNotFoundException _) {
+            return false
+        }
+    }
     docker.withServer('tcp://127.0.0.1:1234') {
         //test in paralell
         parallel(
