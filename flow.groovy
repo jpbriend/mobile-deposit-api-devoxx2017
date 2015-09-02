@@ -53,7 +53,7 @@ stage 'Version Release'
 node('docker') {
     //allows randome testing of above checkpoint
     def failInt = rand.nextInt(max+1)
-    if(failInt>6){
+    if(failInt>7){
         error 'error to allow testing checkpoint'
     } 
     
