@@ -40,8 +40,11 @@ node('docker') {
                   sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo verify'
               }
             }, sonarAnalysis: {
-                docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
-                  sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True sonar:sonar'
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sonar.beedemo',
+                    usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                  docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
+                    sh 'mvn -s /data/mvn/settings.xml -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
+                  }
                 }
             }, failFast: true
         )
