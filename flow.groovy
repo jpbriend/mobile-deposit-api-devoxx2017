@@ -12,12 +12,12 @@ node('docker-cloud') {
         }
     //}
     archive 'pom.xml, src/, target/'
-}
+//}
 
 checkpoint 'Build Complete'
 
 stage 'Quality Analysis'
-node('docker-cloud') {
+//node('docker-cloud') {
     unarchive mapping: ['pom.xml' : '.', 'src/' : '.']
     waitUntil {
         try {
@@ -44,17 +44,11 @@ node('docker-cloud') {
             }, failFast: true
         )
     //}
-}
+//}
 
 checkpoint 'Quality Analysis Complete'
 stage 'Version Release'
-node('docker-cloud') {
-    //allows randome testing of above checkpoint
-    def failInt = rand.nextInt(max+1)
-    if(failInt>7){
-        error 'error to allow testing checkpoint'
-    } 
-    
+//node('docker-cloud') {
     unarchive mapping: ['pom.xml' : '.', 'target/' : '.']
 
     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
