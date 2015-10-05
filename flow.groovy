@@ -4,7 +4,7 @@ def int max = 10
 
 def buildVersion = null
 stage 'Build'
-node('docker') {
+node('docker-cloud') {
     docker.withServer('tcp://127.0.0.1:1234') {
         docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
             sh 'rm -rf *'
@@ -22,7 +22,7 @@ node('docker') {
 checkpoint 'Build Complete'
 
 stage 'Quality Analysis'
-node('docker') {
+node('docker-cloud') {
     unarchive mapping: ['pom.xml' : '.', 'src/' : '.']
     waitUntil {
         try {
@@ -53,7 +53,7 @@ node('docker') {
 
 checkpoint 'Quality Analysis Complete'
 stage 'Version Release'
-node('docker') {
+node('docker-cloud') {
     //allows randome testing of above checkpoint
     def failInt = rand.nextInt(max+1)
     if(failInt>7){
@@ -88,8 +88,12 @@ node('docker') {
         sh 'curl http://webhook:336838a2daad1ea4ed0d18734ff6a9fb@jenkins.beedemo.net/api-team/docker-traceability/submitContainerStatus --data-urlencode status=deployed --data-urlencode inspectData="$(docker inspect mobile-deposit-api)" --data-urlencode hostName=prod-server-1 --data-urlencode hostName=prod --data-urlencode imageName=cloudbees/mobile-deposit-api'
         
         stage 'Publish Docker Image'
-        docker.withRegistry('https://registry.hub.docker.com/', 'docker-registry-kmadel-login') {
-            mobileDepositApiImage.push()
+        sh "docker -v"
+        //need to make sure we are logged in to docker hub registry
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry-kmadel-login',
+            usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            sh 'docker login --username=$USERNAME --password=$PASSWORD --email=kmadel@mac.com'
         }
+        mobileDepositApiImage.push()
    }
 }
