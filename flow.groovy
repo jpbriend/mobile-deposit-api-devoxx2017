@@ -74,9 +74,8 @@ stage 'Version Release'
            echo "no container to stop"        
         }
         //docker traceability rest call
-        mobileDepositApiImage.run("--name mobile-deposit-api -p 8080:8080") {c ->
-          sh "curl http://webhook:336838a2daad1ea4ed0d18734ff6a9fb@jenkins.beedemo.net/api-team/docker-traceability/submitContainerStatus --data-urlencode status=deployed --data-urlencode hostName=prod-server-1 --data-urlencode hostName=prod --data-urlencode imageName=cloudbees/mobile-deposit-api --data-urlencode inspectData=\"\$(docker inspect $c.id)\" \""
-        }
+        container = mobileDepositApiImage.run("--name mobile-deposit-api -p 8080:8080")
+        sh "curl http://webhook:336838a2daad1ea4ed0d18734ff6a9fb@jenkins.beedemo.net/api-team/docker-traceability/submitContainerStatus --data-urlencode status=deployed --data-urlencode hostName=prod-server-1 --data-urlencode hostName=prod --data-urlencode imageName=cloudbees/mobile-deposit-api --data-urlencode inspectData=\"\$(docker inspect $container.id)\" \""
         
         stage 'Publish Docker Image'
         sh "docker -v"
