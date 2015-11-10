@@ -58,7 +58,7 @@ stage 'Version Release'
     }
     matcher = null
     
-    docker.withServer('tcp://54.165.201.3:2376', 'slave-docker-us-east-1-tls'){
+    docker.withServer('tcp://52.26.31.52:3376', 'beedemo-swarm-cert'){
 
         stage 'Build Docker Image'
         def mobileDepositApiImage
