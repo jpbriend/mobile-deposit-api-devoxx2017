@@ -37,9 +37,10 @@ stage 'Quality Analysis'
             }, sonarAnalysis: {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sonar.beedemo',
                     usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                  docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
-                    sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
-                  }
+                    echo 'run sonar tests'
+                  //docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
+                    //sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
+                  //}
                 }
             }, failFast: true
         )
