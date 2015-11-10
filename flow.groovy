@@ -76,15 +76,13 @@ stage 'Version Release'
         }
         //docker traceability rest call
         container = mobileDepositApiImage.run("--name mobile-deposit-api -p 8080:8080")
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'webhook-login',
-            usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-          sh "curl http://$USERNAME:$PASSWORD@jenkins.beedemo.net/api-team/docker-traceability/submitContainerStatus \
+        sh "curl http://webhook:018ebf0660a74b561b852105e35a33b6@jenkins.beedemo.net/api-team/docker-traceability/submitContainerStatus \
             --data-urlencode status=deployed \
             --data-urlencode hostName=prod-server-1 \
             --data-urlencode hostName=prod \
             --data-urlencode imageName=cloudbees/mobile-deposit-api \
             --data-urlencode inspectData=\"\$(docker inspect $container.id)\""
-        }
+        
         
         stage 'Publish Docker Image'
         sh "docker -v"
