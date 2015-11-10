@@ -88,11 +88,9 @@ stage 'Version Release'
         
         stage 'Publish Docker Image'
         sh "docker -v"
-        //need to make sure we are logged in to docker hub registry
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry-kmadel-login',
-            usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            sh 'docker login --username=$USERNAME --password=$PASSWORD --email=kmadel@mac.com'
+        //use withDockerRegistry to make sure we are logged in to docker hub registry
+        withDockerRegistry(registry: [credentialsId: 'docker-registry-kmadel-login']) { 
+          mobileDepositApiImage.push()
         }
-        mobileDepositApiImage.push()
    }
 }
