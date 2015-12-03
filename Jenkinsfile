@@ -7,8 +7,7 @@ node('docker-cloud') {
             sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL clean package'
         }
     //}
-    stash 'pom.xml, src/, target/'
-    stash name: 'pom', includes: 'pomx.xml, src/, target/'
+    stash name: 'pom', includes: 'pom.xml, src, target'
 //}
 
 checkpoint 'Build Complete'
