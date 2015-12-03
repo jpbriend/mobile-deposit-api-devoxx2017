@@ -34,6 +34,7 @@ stage 'Quality Analysis'
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sonar.beedemo',
                     usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     echo 'run sonar tests'
+                  //need to fix sonarAnalysis
                   //docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
                     //sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
                   //}
@@ -41,11 +42,11 @@ stage 'Quality Analysis'
             }, failFast: true
         )
     //}
-//}
+}
 
 checkpoint 'Quality Analysis Complete'
 stage 'Version Release'
-//node('docker-cloud') {
+node('docker-cloud') {
     unstash 'pom'
 
     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
