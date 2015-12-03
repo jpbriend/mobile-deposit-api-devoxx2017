@@ -1,7 +1,3 @@
-import java.util.Random
-def Random rand = new Random()
-def int max = 10
-
 def buildVersion = null
 stage 'Build'
 node('docker-cloud') {
@@ -11,14 +7,15 @@ node('docker-cloud') {
             sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL clean package'
         }
     //}
-    archive 'pom.xml, src/, target/'
+    stash 'pom.xml, src/, target/'
+    stash name: 'pom', includes: 'pomx.xml, src/, target/'
 //}
 
 checkpoint 'Build Complete'
 
 stage 'Quality Analysis'
 //node('docker-cloud') {
-    unarchive mapping: ['pom.xml' : '.', 'src/' : '.']
+    unstash 'pom'
     waitUntil {
         try {
             readFile 'src/main/java/com/cloudbees/example/mobile/deposit/api/DepositEndpoint.java'
@@ -50,7 +47,7 @@ stage 'Quality Analysis'
 checkpoint 'Quality Analysis Complete'
 stage 'Version Release'
 //node('docker-cloud') {
-    unarchive mapping: ['pom.xml' : '.', 'target/' : '.']
+    unstash 'pom'
 
     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
     if (matcher) {
