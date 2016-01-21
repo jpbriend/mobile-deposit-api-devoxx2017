@@ -54,13 +54,13 @@ node('docker-cloud') {
 
         stage 'Deploy to Prod'
         try{
-          sh "docker stop mobile-deposit-api"
-          sh "docker rm mobile-deposit-api"
+          sh "docker stop beedemo-swarm-master/mobile-deposit-api"
+          sh "docker rm beedemo-swarm-master/mobile-deposit-api"
         } catch (Exception _) {
            echo "no container to stop"        
         }
         //docker traceability rest call
-        container = mobileDepositApiImage.run("--name mobile-deposit-api -p 8080:8080")
+        container = mobileDepositApiImage.run("--name mobile-deposit-api -p 8080:8080 --env='constraint:node==beedemo-swarm-master'")
         sh "curl http://webhook:018ebf0660a74b561b852105e35a33b6@jenkins-latest.beedemo.net/api-team/docker-traceability/submitContainerStatus \
             --data-urlencode status=deployed \
             --data-urlencode hostName=prod-server-1 \
