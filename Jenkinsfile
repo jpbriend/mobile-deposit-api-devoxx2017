@@ -13,31 +13,23 @@ checkpoint 'Build Complete'
 stage 'Quality Analysis'
 node('docker-cloud') {
     unstash 'pom'
-    waitUntil {
-        try {
-            readFile 'src/main/java/com/cloudbees/example/mobile/deposit/api/DepositEndpoint.java'
-            return true
-        } catch (FileNotFoundException _) {
-            return false
-        }
-    }
-        //test in paralell
-        parallel(
-            integrationTests: {
-              docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
-                  sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL verify'
-              }
-            }, sonarAnalysis: {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sonar.beedemo',
-                    usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                    echo 'run sonar tests'
-                  //need to fix sonarAnalysis
-                  //docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
+    //test in paralell
+    parallel(
+        integrationTests: {
+            docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
+                sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL verify'
+            }
+        }, sonarAnalysis: {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sonar.beedemo',
+                usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                echo 'run sonar tests'
+                //need to fix sonarAnalysis
+                //docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
                     //sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
-                  //}
-                }
-            }, failFast: true
-        )
+                //}
+            }
+        }, failFast: true
+    )
 }
 
 checkpoint 'Quality Analysis Complete'
