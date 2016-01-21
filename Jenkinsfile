@@ -3,7 +3,7 @@ stage 'Build'
 node('docker-cloud') {
     docker.image('kmadel/maven:3.3.3-jdk-8').inside() {
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], clean: true, doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
-        sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL clean package'
+        sh 'mvn -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL clean package'
     }
     stash name: 'pom', includes: 'pom.xml, src, target'
 }
@@ -25,7 +25,7 @@ node('docker-cloud') {
         parallel(
             integrationTests: {
               docker.image('kmadel/maven:3.3.3-jdk-8').inside() {
-                  sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL verify'
+                  sh 'mvn -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL verify'
               }
             }, sonarAnalysis: {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sonar.beedemo',
@@ -33,7 +33,7 @@ node('docker-cloud') {
                     echo 'run sonar tests'
                   //need to fix sonarAnalysis
                   //docker.image('kmadel/maven:3.3.3-jdk-8').inside() {
-                    //sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
+                    //sh 'mvn -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
                   //}
                 }
             }, failFast: true
