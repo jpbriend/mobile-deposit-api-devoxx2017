@@ -44,7 +44,7 @@ node('docker-cloud') {
     }
     matcher = null
     
-    docker.withServer('tcp://52.26.31.52:3376', 'beedemo-swarm-cert'){
+    docker.withServer('tcp://52.27.249.236:3376', 'beedemo-swarm-cert'){
 
         stage 'Build Docker Image'
         def mobileDepositApiImage
