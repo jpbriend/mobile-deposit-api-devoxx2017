@@ -1,9 +1,9 @@
 def buildVersion = null
 stage 'Build'
 node('docker-cloud') {
-    docker.image('kmadel/maven:3.3.3-jdk-8').inside() {
+    docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], clean: true, doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
-        sh 'mvn -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL clean package'
+        sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL clean package'
     }
     stash name: 'pom', includes: 'pom.xml, src, target'
 }
@@ -24,16 +24,16 @@ node('docker-cloud') {
         //test in paralell
         parallel(
             integrationTests: {
-              docker.image('kmadel/maven:3.3.3-jdk-8').inside() {
-                  sh 'mvn -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL verify'
+              docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
+                  sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL verify'
               }
             }, sonarAnalysis: {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sonar.beedemo',
                     usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     echo 'run sonar tests'
                   //need to fix sonarAnalysis
-                  //docker.image('kmadel/maven:3.3.3-jdk-8').inside() {
-                    //sh 'mvn -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
+                  //docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
+                    //sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
                   //}
                 }
             }, failFast: true
@@ -52,7 +52,7 @@ node('docker-cloud') {
     }
     matcher = null
     
-    docker.withServer('tcp://52.27.249.236:3376', 'beedemo-swarm-cert'){
+    docker.withServer('tcp://52.26.31.52:3376', 'beedemo-swarm-cert'){
 
         stage 'Build Docker Image'
         def mobileDepositApiImage
