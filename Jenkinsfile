@@ -1,8 +1,8 @@
 def buildVersion = null
 stage 'Build'
 node('docker-cloud') {
+    checkout scm
     docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], clean: true, doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/cloudbees/mobile-deposit-api.git']]])
         sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL clean package'
     }
     stash name: 'pom', includes: 'pom.xml, src, target'
