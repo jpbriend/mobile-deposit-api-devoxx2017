@@ -8,10 +8,10 @@ node('docker-cloud') {
     stash name: 'pom', includes: 'pom.xml, src, target'
 }
 
-checkpoint 'Build Complete'
-
-stage 'Quality Analysis'
-node('docker-cloud') {
+if(!env.BRANCH_NAME.startsWith("PR")){
+  checkpoint 'Build Complete'
+  stage 'Quality Analysis'
+  node('docker-cloud') {
     unstash 'pom'
     //test in paralell
     parallel(
@@ -30,11 +30,13 @@ node('docker-cloud') {
             }
         }, failFast: true
     )
+  }
 }
 
-checkpoint 'Quality Analysis Complete'
-stage 'Version Release'
-node('docker-cloud') {
+if(env.BRANCH_NAME=="master"){
+  checkpoint 'Quality Analysis Complete'
+  stage name: 'Version Release', concurrency: 1
+  node('docker-cloud') {
     unstash 'pom'
 
     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
@@ -75,5 +77,6 @@ node('docker-cloud') {
         withDockerRegistry(registry: [credentialsId: 'docker-registry-kmadel-login']) { 
           mobileDepositApiImage.push()
         }
-   }
+     }
+  }
 }
