@@ -13,6 +13,7 @@ if(!env.BRANCH_NAME.startsWith("PR")){
   checkpoint 'Build Complete'
   stage 'Quality Analysis'
   node('docker-cloud') {
+    try {
     unstash 'pom'
     //test in paralell
     parallel(
@@ -30,6 +31,11 @@ if(!env.BRANCH_NAME.startsWith("PR")){
             }
         }, failFast: true
     )
+    } catch (x) {
+      currentBuild.result = "failed"
+      hipchatSend color: 'RED', message: "${env.JOB_NAME} ${env.BUILD_NUMBER} status: ${currentBuild.result} <a href=\'${env.BUILD_URL}\'>Open</a>", room: '1613593', server: 'cloudbees.hipchat.com', token: 'A6YX8LxNc4wuNiWUn6qHacfO1bBSGXQ6E1lELi1z'
+      throw x
+    }
   }
 }
 
@@ -79,4 +85,9 @@ if(env.BRANCH_NAME=="master"){
         }
      }
   }
+}
+node('docker-cloud') {
+  //update hipchat with success
+  currentBuild.result = "success"
+  hipchatSend color: 'GREEN', message: "${env.JOB_NAME} ${env.BUILD_NUMBER} status: ${currentBuild.result} <a href=\'${env.BUILD_URL}\'>Open</a>", room: '1613593', server: 'cloudbees.hipchat.com', token: 'A6YX8LxNc4wuNiWUn6qHacfO1bBSGXQ6E1lELi1z'
 }
