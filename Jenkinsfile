@@ -24,7 +24,7 @@ if(!env.BRANCH_NAME.startsWith("PR")){
             withCredentials([[$class: 'StringBinding', credentialsId: 'sonar.beedemo', variable: 'TOKEN']]) {
                 echo 'running sonar tests'
                 docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
-                    sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.username=$TOKEN sonar:sonar'
+                    sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.login=$TOKEN sonar:sonar'
                 }
                 echo 'finished sonar tests'
             }
