@@ -50,10 +50,7 @@
 
 
         <!-- (1) Sonar connection properties - typically specified on commandline -->
-        <sonar.host.url>http://sonar.beedemo.net:9001</sonar.host.url>
-        <sonar.jdbc.url>jdbc:postgresql://sonar.beedemo.net:5432/sonar</sonar.jdbc.url>
-        <sonar.jdbc.username>${sonar.jdbc.username}</sonar.jdbc.username>
-        <sonar.jdbc.password>${sonar.jdbc.password}</sonar.jdbc.password>
+        <sonar.host.url>http://sonar.beedemo.net:9000</sonar.host.url>
         <!-- end (1) -->
 
         <!-- (2) Help Sonar to be sure about language and version -->
