@@ -4,7 +4,7 @@ stage 'Build'
 node('docker-cloud') {
     checkout scm
     docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
-        sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL clean package'
+        sh 'mvn -Dmaven.repo.local=/data/mvn/repo clean package'
     }
     stash name: 'pom', includes: 'pom.xml, src, target'
 }
@@ -21,13 +21,12 @@ if(!env.BRANCH_NAME.startsWith("PR")){
                 sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.jdbc.username=NULL -Dsonar.jdbc.password=NULL verify'
             }
         }, sonarAnalysis: {
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sonar.beedemo',
-                usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                echo 'run sonar tests'
-                //need to fix sonarAnalysis
-                //docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
-                    //sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.jdbc.username=$USERNAME -Dsonar.jdbc.password=$PASSWORD sonar:sonar'
-                //}
+            withCredentials([[$class: 'StringBinding', credentialsId: 'sonar.beedemo', variable: 'TOKEN']]) {
+                echo 'running sonar tests'
+                docker.image('kmadel/maven:3.3.3-jdk-8').inside('-v /data:/data') {
+                    sh 'mvn -Dmaven.repo.local=/data/mvn/repo -Dsonar.scm.disabled=True -Dsonar.username=$TOKEN sonar:sonar'
+                }
+                echo 'finished sonar tests'
             }
         }, failFast: true
     )
