@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mobile-deposit-api-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mobile-deposit-api
+    spec:
+      containers:
+      - name: mobile-deposit-api
+        image: ngin:1.7.9
+        ports:
+        - containerPort: 80
