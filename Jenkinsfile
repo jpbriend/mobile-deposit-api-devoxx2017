@@ -1,11 +1,12 @@
 // Mandatory environment variables:
 // DOCKER_REGISTRY (without http://, no ending /)
-// KUBERNETES_SECRET_KEY
 // k8s_username
 // k8s_password
 // k8s_tenant
 // k8s_name
 // k8s_resourceGroup
+
+// You need to create a Jenkins Credentials, type 'SSH Username with private key', with ID 'kuby' (no passphrase)
 
 def buildVersion = null
 def short_commit = null
