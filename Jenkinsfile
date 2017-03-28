@@ -6,7 +6,9 @@
 // k8s_name
 // k8s_resourceGroup
 
-// You need to create a Jenkins Credentials, type 'Secret file', with ID 'kuby'
+// You need to create 2 Jenkins Credentials
+// * 1 type 'Secret file', with ID 'kuby'
+// * 1 type 'username with password' with ID 'test-registry'
 
 def buildVersion = null
 def short_commit = null
