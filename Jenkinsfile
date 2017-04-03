@@ -109,6 +109,8 @@ stage('Deploy to Prod') {
           kubectl rollout status deployment/mobile-deposit-api-deployment
           
           kubectl expose -f ./deployment.yml --type=LoadBalancer ||true
+
+          kubectl get services
           
           """
           //send commit status to GitHub
