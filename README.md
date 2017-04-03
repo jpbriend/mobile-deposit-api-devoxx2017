@@ -132,7 +132,22 @@ Jenkins should have detected the _master_ branch and should have started buildin
 
 # Checking Application is working
 
-Just use the following URL:
+In order to expose your application to the world, you need to ask Kubernetes to provision a public IP on Azure.
+This is done via _kubectl expose ..._ but it takes some time.
+You can do a regular check using the following command to see when a public IP has been assigned:
+```
+kubectl get svc
+```
+
+Here is an example of the output with a public IP assigned:
+```
+root@05f3498bf643:~# kubectl get svc
+NAME                 CLUSTER-IP    EXTERNAL-IP    PORT(S)    AGE
+kubernetes           10.0.0.1      <none>         443/TCP    17h
+mobile-deposit-api   10.0.129.65   52.232.40.27   8080/TCP   6m
+```
+
+To access your application, just use the following URL and use the external IP given by the previous command:
 ```
 http://xxxxxxxxxxx:8080/account/deposit
 ```
