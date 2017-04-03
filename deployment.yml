@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: mobile-deposit-api-service
 spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
   type: LoadBalancer
 ---
 apiVersion: extensions/v1beta1
