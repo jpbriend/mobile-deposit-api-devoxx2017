@@ -96,15 +96,20 @@ stage('Deploy to Prod') {
           (cat ${KUBERNETES_SECRET_KEY}; echo '\n') > ~/.ssh/id_rsa
 
           az acs kubernetes get-credentials -n ${env.k8s_name} -g ${env.k8s_resourceGroup}
+          
+          sed -i 's/REGISTRY_NAME/${env.DOCKER_REGISTRY}/g' ./deployment.yml
+          sed -i 's/IMAGE_TAG/${dockerTag}/g' ./deployment.yml
+
+          cat ./deployment.yml
+
           kubectl version
           
           kubectl create -f ./deployment.yml ||true
           
           if [ "\$?" -ne "0" ]; then
-            kubectl apply -f ./deployment.yml
+            kubectl set image deployment/mobile-deposit-api-deployment mobile-deposit-api=${env.DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
+            kubectl rollout status deployment/mobile-deposit-api-deployment
           fi
-          
-          kubectl rollout status deployment/mobile-deposit-api-deployment
 
           kubectl get services
           
