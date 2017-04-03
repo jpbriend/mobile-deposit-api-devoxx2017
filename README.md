@@ -129,3 +129,12 @@ Jenkins is now going to scan the branches/ PR in the repository and look for Jen
 Jenkins should have detected the _master_ branch and should have started building the job.
 
 ![](images/branch_indexing.png)
+
+# Checking Application is working
+
+Just use the following URL:
+```
+http://xxxxxxxxxxx:8080/account/deposit
+```
+
+The result should be JSON containing the details of a bank account and the version of the component.
