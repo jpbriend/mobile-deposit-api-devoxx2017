@@ -104,11 +104,7 @@ stage('Deploy to Prod') {
             kubectl apply -f ./deployment.yml
           fi
           
-          
-          kubectl set image deployment/mobile-deposit-api-deployment mobile-deposit-api=${env.DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
           kubectl rollout status deployment/mobile-deposit-api-deployment
-          
-          kubectl expose -f ./deployment.yml --type=LoadBalancer ||true
 
           kubectl get services
           
