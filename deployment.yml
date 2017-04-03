@@ -6,6 +6,7 @@ spec:
   ports:
   - port: 8080
     targetPort: 8080
+  type: LoadBalancer
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -23,4 +24,3 @@ spec:
         image: ${env.DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
         ports:
         - containerPort: 8080
-        type: LoadBalancer
