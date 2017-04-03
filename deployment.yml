@@ -1,17 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mobile-deposit-api-service
+  name: mobile-deposit-api
+  labels:
+    app: mobile-deposit-api
 spec:
   ports:
   - port: 8080
     targetPort: 8080
   type: LoadBalancer
+  selector:
+    app: mobile-deposit-api
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mobile-deposit-api-deployment
+  name: mobile-deposit-api
 spec:
   replicas: 1
   template:
