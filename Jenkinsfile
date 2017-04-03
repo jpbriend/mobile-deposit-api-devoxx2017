@@ -103,14 +103,8 @@ stage('Deploy to Prod') {
           cat ./deployment.yml
 
           kubectl version
-          
-          kubectl create -f ./deployment.yml ||true
-          
-          if [ "\$?" -ne "0" ]; then
-            kubectl apply -f ./deployment.yml
-            kubectl set image deployment/mobile-deposit-api-deployment mobile-deposit-api=${env.DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
-            kubectl rollout status deployment/mobile-deposit-api-deployment
-          fi
+
+          kubectl apply -f ./deployment.yml
 
           kubectl get services
           
