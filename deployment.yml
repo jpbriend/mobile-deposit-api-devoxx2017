@@ -21,6 +21,6 @@ spec:
     spec:
       containers:
       - name: mobile-deposit-api
-        image: ${env.DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
+        image: REGISTRY_NAME/mobile-deposit-api:IMAGE_TAG
         ports:
         - containerPort: 8080
