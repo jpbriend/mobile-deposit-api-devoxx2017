@@ -13,6 +13,8 @@ public class Deposit {
 
     private BigDecimal balance;
 
+    private String hostname;
+
     public String getName() {
         return name;
     }
@@ -45,5 +47,13 @@ public class Deposit {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
     }
 }
