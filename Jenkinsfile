@@ -64,9 +64,7 @@ stage('Version Release') {
     stage('Build Docker Image') {
       //unstash Spring Boot JAR and Dockerfile
       unstash 'jar-dockerfile'
-      dir('target') {
-          mobileDepositApiImage = docker.build "${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}"
-      }
+      mobileDepositApiImage = docker.build "${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}"
     }
       
     stage('Publish Docker Image') {
