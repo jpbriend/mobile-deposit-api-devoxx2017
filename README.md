@@ -21,6 +21,9 @@ Here is how to create a GitHub Personal Access Token:
   * read:org
   * write:repo_hook
   * read:repo_hook
+
+![](images/token.png)
+
 * Then hit the **Generate token** button
 * Keep the page opened
 
@@ -35,6 +38,9 @@ Let's input this token in Jenkins as a Credential.
   * **Username**: input your GitHub username
   * **Password**: copy/paste the access token which was previously created
   * **Description**: input something useful such as 'Github token'
+
+![](images/add_credentials.png)
+
 * Hit the **OK** button
 
 With this token, you will not face any GitHub API rate limitation.
@@ -52,6 +58,9 @@ Let's create another Jenkins Credential to host this sensible information
   * **Username**: input your Docker registry login
   * **Password**: enter your Docker registry password
   * **id**: input 'test-registry'. This ID will be used in the Jenkins Pipeline to identify the Credential.
+
+![](images/add_credentials.png)
+
 * Hit the **OK** button
 
 ## Kubernetes Secret key
@@ -66,6 +75,9 @@ Let's input this Secret key into Jenkins as a Credential.
   * **Kind**: 'Secret file'
   * **File**: select the secret key file located on your laptop
   * **ID**: input 'kuby'. This ID will be used in the Jenkins Pipeline to identify the secret.
+
+![](images/add_credentials.png)
+
 * Hit the **OK** button
 
 ## Environment variables
@@ -88,6 +100,8 @@ k8s_name=xxxxxxxxxxxx
 k8s_resourceGroup=xxxxxxxxxxxx
 ```
 
+![](images/env_variables.png)
+
 * Hit the **Save** button
 
 ## Pipeline job
@@ -109,5 +123,9 @@ We will even use a Multibranch Pipeline job: Jenkins will scan all the branches 
 * In the **Repository** dropdown list, select the repository _mobile-deposit-api-devoxx2017_
 * Hit the **Save** button
 
+![](images/pipeline.png)
+
 Jenkins is now going to scan the branches/ PR in the repository and look for Jenkinsfile files. When a Jenkinsfile is found, a Pipeline is created.
 Jenkins should have detected the _master_ branch and should have started building the job.
+
+![](images/branch_indexing.png)
