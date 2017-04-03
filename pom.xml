@@ -13,7 +13,7 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.3.0.M1</version>
+        <version>1.5.2.RELEASE</version>
     </parent>
 
     <licenses>
@@ -69,17 +69,14 @@
         <sonar.jacoco.reportPath>target/jacoco-ut.exec</sonar.jacoco.reportPath>
         <!-- append integration test coverage from each module to the same(!) file -->
         <sonar.jacoco.itReportPath>${project.root.basedir}/target/jacoco-it.exec</sonar.jacoco.itReportPath>
+
+        <spock.version>1.1</spock.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jersey</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
