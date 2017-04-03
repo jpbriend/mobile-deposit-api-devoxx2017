@@ -91,25 +91,25 @@ stage('Deploy to Prod') {
         // Execute this sh script
         sh """
           az login --service-principal -u ${env.k8s_username} -p ${env.k8s_password} --tenant ${env.k8s_tenant}
+          
+          # Install the Kubenetes secret key
           mkdir -p ~/.ssh
-
           (cat ${KUBERNETES_SECRET_KEY}; echo '\n') > ~/.ssh/id_rsa
 
+          # Ask Azure CLI to install the Kubenetes credentials
           az acs kubernetes get-credentials -n ${env.k8s_name} -g ${env.k8s_resourceGroup}
+
+          # Check if the Kubernetes credentials have been correctly installed
           kubectl version
           
-          kubectl create -f ./deployment.yml ||true
-          
-          if [ "\$?" -ne "0" ]; then
-            kubectl apply -f ./deployment.yml
-          fi
-          
-          
-          kubectl set image deployment/mobile-deposit-api-deployment mobile-deposit-api=${env.DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
-          kubectl rollout status deployment/mobile-deposit-api-deployment
-          
-          kubectl expose -f ./deployment.yml --type=LoadBalancer ||true
+          # Update the deployment.yml with the latest versions of the app
+          sed -i 's/REGISTRY_NAME/${env.DOCKER_REGISTRY}/g' ./deployment.yml
+          sed -i 's/IMAGE_TAG/${dockerTag}/g' ./deployment.yml
 
+          # Deploy the application
+          kubectl apply -f ./deployment.yml
+
+          # Display the installed services (may also display the external IP if the service has been exposed)
           kubectl get services
           
           """
