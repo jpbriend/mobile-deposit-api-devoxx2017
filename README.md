@@ -1,7 +1,10 @@
 # Devoxx 2017 example application
 
 This application is a very simple SpringBoot app.
+
 During the Devoxx lab, you will learn how to use Jenkins Pipeline to build it, build a Docker image of the app, push it to a Docker registry, and finally deploy to a Kubernetes cluster.
+
+First of all, we need to setup various credentials and secrets in order to access GitHub, Azure and the Kubernetes cluster.
 
 ## GitHub Personal Access Token
 
@@ -130,7 +133,36 @@ Jenkins should have detected the _master_ branch and should have started buildin
 
 ![](images/branch_indexing.png)
 
-# Checking Application is working
+# Jenkinsfile
+
+[File](./Jenkinsfile) has comments.
+The Pipeline is quite simple:
+* Get an agent
+* Checkout source code
+* Get the latest Git commit to tag the Docker image
+* Build the application from a Docker container. The Docker image will have JDK8 and Maven 3.3
+* Archive the JUnit test results
+* Stash files which will be needed later
+
+* Build the Docker image of the application
+* Push this image to our private Docker registry (hosted on Azure, via [ACR](https://azure.microsoft.com/en-us/services/container-registry/))
+
+* Use [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/overview) to connect to Azure
+* Use Azure CLI 2.0 to get Kubernetes credentials
+* Create a deployment.yml for Kubernetes, which will deploy the new version of the application and expose it on Internet
+* Execute the deployment via the Kubernetes commandline _kubectl_
+
+# Checking if the Docker image has been pushed to ACR
+
+1. Browse [https://portal.azure.com]
+2. Authenticate with your Microsoft Azure Credentials
+3. Browse the resource group where you have created the cluster
+4. Find the resource of type **Container Registry** and click on the **Repositories** menu entry on the left
+
+You should see 1 or multiple tags  for the Docker images you have pushed.
+![](./images/ACR.png)
+
+# Checking if the Application is working
 
 In order to expose your application to the world, you need to ask Kubernetes to provision a public IP on Azure.
 This is done via _kubectl expose ..._ but it takes some time.
