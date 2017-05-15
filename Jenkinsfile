@@ -44,9 +44,6 @@ stage ('Build') {
   }
 }
 
-// In case Release fails, setup a checkpoint in order to be able to restart the Pipeline here
-checkpoint 'Quality Analysis Complete'
-
 def dockerTag = "${env.BUILD_NUMBER}-${short_commit}"
 
 stage('Version Release') {
@@ -78,13 +75,10 @@ stage('Version Release') {
     }
   }
 }
-    
-//set checkpoint before deployment
-checkpoint 'Build Complete'
 
 stage('Deploy to Prod') {
 
-  docker.image('jcorioland/devoxx2017attendee').inside('-v /data:/data') {
+  docker.image('jcorioland/devoxx2017attendee').inside {
 
     // Load the credentials needed to use the kubectl commandline
     withCredentials([file(credentialsId: 'kuby', variable: 'KUBERNETES_SECRET_KEY')]) {
