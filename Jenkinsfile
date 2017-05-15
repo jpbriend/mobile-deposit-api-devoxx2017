@@ -28,7 +28,7 @@ stage ('Build') {
     short_commit=git_commit.take(7)
 
     // Let's build the application inside a Docker container 
-    docker.image('kmadel/maven:3.3.3-jdk-8') {
+    docker.image('kmadel/maven:3.3.3-jdk-8').inside {
         
         sh "mvn -DGIT_COMMIT='${short_commit}' -DBUILD_NUMBER=${env.BUILD_NUMBER} -DBUILD_URL=${env.BUILD_URL} clean package"
     }
