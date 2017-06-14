@@ -17,9 +17,12 @@ echo "Building ${env.BRANCH_NAME}"
 podTemplate(label: 'mypod',
             containers: [
               containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine', ttyEnabled: true, command: 'cat'),
-              containerTemplate(name: 'attendees', image: 'jcorioland/devoxx2017attendee', ttyEnabled: true, command: 'cat')
+              containerTemplate(name: 'attendees', image: 'jcorioland/devoxx2017attendee', ttyEnabled: true, command: 'cat'),
+              containerTemplate(name: 'docker', image: 'docker:17.06.0-dind', ttyEnabled: true, command: 'cat')
             ],
-            volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]) {
+            volumes: [
+              hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+              persistentVolumeClaim(claimName: 'maven-local-repo', mountPath: '/root/.m2nrepo')]) {
 
 
   stage ('Build') {
@@ -66,17 +69,19 @@ podTemplate(label: 'mypod',
       matcher = null
       
       def mobileDepositApiImage
-      stage('Build Docker Image') {
-        //unstash Spring Boot JAR and Dockerfile
-        dir('target') {
-          unstash 'jar-dockerfile'
-          mobileDepositApiImage = docker.build "${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}"
+      container('docker') {
+        stage('Build Docker Image') {
+          //unstash Spring Boot JAR and Dockerfile
+          dir('target') {
+            unstash 'jar-dockerfile'
+            mobileDepositApiImage = docker.build "${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}"
+          }
         }
-      }
-        
-      stage('Publish Docker Image') {
-        withDockerRegistry([url: "https://${DOCKER_REGISTRY}/v2", credentialsId: 'test-registry']) { 
-          mobileDepositApiImage.push()
+          
+        stage('Publish Docker Image') {
+          withDockerRegistry([url: "https://${DOCKER_REGISTRY}/v2", credentialsId: 'test-registry']) { 
+            mobileDepositApiImage.push()
+          }
         }
       }
     }
