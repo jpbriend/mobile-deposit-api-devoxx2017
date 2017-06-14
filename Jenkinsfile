@@ -21,8 +21,7 @@ podTemplate(label: 'mypod',
               containerTemplate(name: 'docker', image: 'docker:17.06.0-dind', ttyEnabled: true, command: 'cat')
             ],
             volumes: [
-              hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
-              persistentVolumeClaim(claimName: 'maven-local-repo', mountPath: '/root/.m2nrepo')]) {
+              hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]) {
 
 
   stage ('Build') {
