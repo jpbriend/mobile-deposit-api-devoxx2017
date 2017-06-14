@@ -27,15 +27,17 @@ podTemplate(label: 'mypod',
     // Asking for an agent with label 'mypod'
     node('mypod') {
 
-      checkout scm
-
-      // Let's retrieve the SHA-1 on the last commit (to identify the version we build)
-      sh('git rev-parse HEAD > GIT_COMMIT')
-      git_commit=readFile('GIT_COMMIT')
-      short_commit=git_commit.take(7)
+      
 
       // Let's build the application inside a Docker container
       container('maven') {
+        checkout scm
+
+        // Let's retrieve the SHA-1 on the last commit (to identify the version we build)
+        sh('git rev-parse HEAD > GIT_COMMIT')
+        git_commit=readFile('GIT_COMMIT')
+        short_commit=git_commit.take(7)
+
         sh "mvn -Dmaven.repo.local=/data/mvn/repo -DGIT_COMMIT='${short_commit}' -DBUILD_NUMBER=${env.BUILD_NUMBER} -DBUILD_URL=${env.BUILD_URL} clean package"
 
         // Tell Jenkins to archive the results of the Unit tests
@@ -48,9 +50,6 @@ podTemplate(label: 'mypod',
       }
     }
   }
-
-  // In case Release fails, setup a checkpoint in order to be able to restart the Pipeline here
-  checkpoint 'Quality Analysis Complete'
 
   def dockerTag = "${env.BUILD_NUMBER}-${short_commit}"
 
