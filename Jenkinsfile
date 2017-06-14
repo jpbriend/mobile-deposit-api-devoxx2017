@@ -75,6 +75,7 @@ podTemplate(label: 'mypod',
         unstash 'jar-dockerfile'
         container('docker') {
           stage('Build Docker Image') {
+            sh 'ls -l'
             mobileDepositApiImage = docker.build "${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}"
           }
 
