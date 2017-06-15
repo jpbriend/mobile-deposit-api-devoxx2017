@@ -73,10 +73,10 @@ podTemplate(label: 'mypod',
       //unstash Spring Boot JAR and Dockerfile
       dir('target') {
         unstash 'jar-dockerfile'
+        
         container('docker') {
           stage('Build Docker Image') {
-            sh 'ls -l'
-            mobileDepositApiImage = docker.build "${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}"
+            sh 'docker build -t ${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag} .'
           }
 
           stage('Publish Docker Image') {
