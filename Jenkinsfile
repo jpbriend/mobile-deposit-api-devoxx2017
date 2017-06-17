@@ -1,24 +1,17 @@
 // Mandatory environment variables:
 // DOCKER_REGISTRY (without http://, no ending /)
-// k8s_username
-// k8s_password
-// k8s_tenant
-// k8s_name
-// k8s_resourceGroup
 
-// You need to create 2 Jenkins Credentials
-// * 1 type 'Secret file', with ID 'kuby'
+// You need to create 1 Jenkins Credential
 // * 1 type 'username with password' with ID 'test-registry'
 
 def buildVersion = null
 def short_commit = null
-echo "Building ${env.BRANCH_NAME}"
 
 podTemplate(label: 'mypod',
             containers: [
               containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine', ttyEnabled: true, command: 'cat'),
-              containerTemplate(name: 'attendees', image: 'jcorioland/devoxx2017attendee', ttyEnabled: true, command: 'cat'),
-              containerTemplate(name: 'docker', image: 'docker:17.06.0', ttyEnabled: true, command: 'cat')
+              containerTemplate(name: 'kubectl', image: 'jcorioland/devoxx2017attendee', ttyEnabled: true, command: 'cat'),
+              containerTemplate(name: 'docker', image: 'docker:1.12.6', ttyEnabled: true, command: 'cat')
             ],
             volumes: [
               hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]) {
@@ -67,68 +60,62 @@ podTemplate(label: 'mypod',
       }
       matcher = null
       
-      def mobileDepositApiImage
-      
       
       //unstash Spring Boot JAR and Dockerfile
       dir('target') {
+
         unstash 'jar-dockerfile'
         
         container('docker') {
+
           stage('Build Docker Image') {
-            sh 'docker build -t ${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag} .'
+            sh "docker build -t ${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag} target"
           }
 
           stage('Publish Docker Image') {
-            withDockerRegistry([url: "https://${DOCKER_REGISTRY}/v2", credentialsId: 'test-registry']) { 
-              mobileDepositApiImage.push()
+            withCredentials([[$class: 'UsernamePasswordMultiBinding',
+                              credentialsId: 'test-registry',
+                              usernameVariable: 'USERNAME',
+                              passwordVariable: 'PASSWORD']]) {
+                sh """
+                  docker login ${DOCKER_REGISTRY} --username ${USERNAME} --password ${PASSWORD}
+                  docker push ${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
+                """
             }
           }
         }
       }
     }
   }
+
+  stage('Deploy to Kubernetes') {
+
+    node('mypod') {
+
+      container('kubectl') {
       
-  //set checkpoint before deployment
-  checkpoint 'Build Complete'
+        unstash 'deployment.yml'
 
-  stage('Deploy to Prod') {
+        // Execute this sh script
+        sh """
+          # Check if the Kubernetes credentials have been correctly installed
+          kubectl version
+          
+          # Update the deployment.yml with the latest versions of the app
+          sed -i 's/REGISTRY_NAME/${env.DOCKER_REGISTRY}/g' ./deployment.yml
+          sed -i 's/IMAGE_TAG/${dockerTag}/g' ./deployment.yml
 
-    container('attendees') {
+          # Deploy the application
+          kubectl apply -f ./deployment.yml
 
-      // Load the credentials needed to use the kubectl commandline
-      withCredentials([file(credentialsId: 'kuby', variable: 'KUBERNETES_SECRET_KEY')]) {
-          unstash 'deployment.yml'
-
-          // Execute this sh script
-          sh """
-            az login --service-principal -u ${env.k8s_username} -p ${env.k8s_password} --tenant ${env.k8s_tenant}
-            
-            # Install the Kubenetes secret key
-            mkdir -p ~/.ssh
-            (cat ${KUBERNETES_SECRET_KEY}; echo '\n') > ~/.ssh/id_rsa
-
-            # Ask Azure CLI to install the Kubenetes credentials
-            az acs kubernetes get-credentials -n ${env.k8s_name} -g ${env.k8s_resourceGroup}
-
-            # Check if the Kubernetes credentials have been correctly installed
-            kubectl version
-            
-            # Update the deployment.yml with the latest versions of the app
-            sed -i 's/REGISTRY_NAME/${env.DOCKER_REGISTRY}/g' ./deployment.yml
-            sed -i 's/IMAGE_TAG/${dockerTag}/g' ./deployment.yml
-
-            # Deploy the application
-            kubectl apply -f ./deployment.yml
-
-            # Display the installed services (may also display the external IP if the service has been exposed)
-            kubectl get services
-            
-            """
-            //send commit status to GitHub
-            step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'Jenkins'], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'BetterThanOrEqualBuildResult', message: 'Pipeline completed successfully', result: 'SUCCESS', state: 'SUCCESS']]]])
-            
-            currentBuild.result = "success"
+          # Display the installed services (may also display the external IP if the service has been exposed)
+          kubectl get services
+          
+          """
+        //send commit status to GitHub
+        step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'Jenkins'], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'BetterThanOrEqualBuildResult', message: 'Pipeline completed successfully', result: 'SUCCESS', state: 'SUCCESS']]]])
+        
+        currentBuild.result = "success"
       }
     }
   }
