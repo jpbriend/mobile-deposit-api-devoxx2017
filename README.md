@@ -66,23 +66,6 @@ Let's create another Jenkins Credential to host this sensible information
 
 * Hit the **OK** button
 
-## Kubernetes Secret key
-
-You will deploy your application to a Kubernetes cluster. In order to do this, you will use the _kubectl_ command line, which is secured by a Secret key.
-Let's input this Secret key into Jenkins as a Credential.
-* Go on your Master and inside your personal Folder
-* Click on the **Credentials** link on the left menu
-* Click on the **Folder** link which appeared
-* Click on the **Global credentials (unrestricted)** link
-* Click on the **Add Credentials** link
-  * **Kind**: 'Secret file'
-  * **File**: select the secret key file located on your laptop
-  * **ID**: input 'kuby'. This ID will be used in the Jenkins Pipeline to identify the secret.
-
-![](images/add_credentials.png)
-
-* Hit the **OK** button
-
 ## Environment variables
 
 Hard-coded values in a Pipeline is a bad practice.
@@ -96,11 +79,6 @@ So each of the attendees can setup their own env. variables on their folder, wit
 
 ```
 DOCKER_REGISTRY=xxxxxxxxxxxx
-k8s_username=xxxxxxxxxxxx
-k8s_password=xxxxxxxxxxxx
-k8s_tenant=xxxxxxxxxxxx
-k8s_name=xxxxxxxxxxxx
-k8s_resourceGroup=xxxxxxxxxxxx
 ```
 
 ![](images/env_variables.png)
@@ -129,7 +107,7 @@ We will even use a Multibranch Pipeline job: Jenkins will scan all the branches 
 ![](images/pipeline.png)
 
 Jenkins is now going to scan the branches/ PR in the repository and look for Jenkinsfile files. When a Jenkinsfile is found, a Pipeline is created.
-Jenkins should have detected the _master_ branch and should have started building the job.
+Jenkins should have detected the _kuberbetes_ branch and should have started building the job.
 
 ![](images/branch_indexing.png)
 
@@ -147,8 +125,6 @@ The Pipeline is quite simple:
 * Build the Docker image of the application
 * Push this image to our private Docker registry (hosted on Azure, via [ACR](https://azure.microsoft.com/en-us/services/container-registry/))
 
-* Use [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/overview) to connect to Azure
-* Use Azure CLI 2.0 to get Kubernetes credentials
 * Create a deployment.yml for Kubernetes, which will deploy the new version of the application and expose it on Internet
 * Execute the deployment via the Kubernetes commandline _kubectl_
 

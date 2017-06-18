@@ -19,7 +19,7 @@ podTemplate(label: 'mypod',
 
   stage ('Build') {
 
-    // Asking for an agent with label 'mypod'
+    // Asking for an agent with label 'mypod'. Kubernetes plugin will provide a K8s pod as an agent
     node('mypod') {
 
       checkout scm
@@ -38,52 +38,38 @@ podTemplate(label: 'mypod',
         junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'
 
         // Let's stash various files, mandatory of the pipeline
-        stash name: 'pom', includes: 'pom.xml'
         stash name: 'jar-dockerfile', includes: '**/target/*.jar,**/target/Dockerfile'
         stash name: 'deployment.yml', includes:'deployment.yml'
       }
     }
   }
 
-  def dockerTag = "${env.BUILD_NUMBER}-${short_commit}"
+  node('mypod') {
+    
+    //unstash Spring Boot JAR and Dockerfile
+    dir('target') {
 
-  stage('Version Release') {
-
-    node('mypod') {
-
-      // Extract the version number from the pom.xml file
-      unstash 'pom'
-      def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
-      if (matcher) {
-          buildVersion = matcher[0][1]
-          echo "Release version: ${buildVersion}"
-      }
-      matcher = null
+      unstash 'jar-dockerfile'
+      def dockerTag = "${env.BUILD_NUMBER}-${short_commit}"
       
-      
-      //unstash Spring Boot JAR and Dockerfile
-      dir('target') {
+      container('docker') {
 
-        unstash 'jar-dockerfile'
-        
-        container('docker') {
+        stage('Build Docker Image') {
+          sh "docker build -t ${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag} target"
+        }
 
-          stage('Build Docker Image') {
-            sh "docker build -t ${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag} target"
-          }
-
-          stage('Publish Docker Image') {
-            withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                              credentialsId: 'test-registry',
-                              usernameVariable: 'USERNAME',
-                              passwordVariable: 'PASSWORD']]) {
-                sh """
-                  docker login ${DOCKER_REGISTRY} --username ${USERNAME} --password ${PASSWORD}
-                  docker push ${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
-                """
-            }
+        stage('Publish Docker Image') {
+          withCredentials([[$class: 'UsernamePasswordMultiBinding',
+                            credentialsId: 'test-registry',
+                            usernameVariable: 'USERNAME',
+                            passwordVariable: 'PASSWORD']]) {
+              sh """
+                docker login ${DOCKER_REGISTRY} --username ${USERNAME} --password ${PASSWORD}
+                docker push ${DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
+              """
           }
         }
+
       }
     }
   }
@@ -112,10 +98,8 @@ podTemplate(label: 'mypod',
           kubectl get services
           
           """
-        //send commit status to GitHub
-        step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'Jenkins'], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'BetterThanOrEqualBuildResult', message: 'Pipeline completed successfully', result: 'SUCCESS', state: 'SUCCESS']]]])
         
-        currentBuild.result = "success"
+        currentBuild.result = "Success"
       }
     }
   }
