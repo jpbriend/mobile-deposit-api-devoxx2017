@@ -44,13 +44,14 @@ podTemplate(label: 'mypod',
     }
   }
 
+  def dockerTag = "${env.BUILD_NUMBER}-${short_commit}"
+
   node('mypod') {
     
     //unstash Spring Boot JAR and Dockerfile
     dir('target') {
 
       unstash 'jar-dockerfile'
-      def dockerTag = "${env.BUILD_NUMBER}-${short_commit}"
       
       container('docker') {
 
